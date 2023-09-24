@@ -1,14 +1,16 @@
-
 /*****************************************************************************
- * Data Encoding/Decoding
+ * Data Encoding/Decoding Functions
  ****************************************************************************/
 
-/*
- * Encode data to its hex-value representation in a buffer.
- *
- * Returns:
- *    0+  number of bytes written to buf
- *    GDB_EOF if the buffer is too small
+/**
+ * @brief Encode data into its hexadecimal representation and store in a buffer.
+ * 
+ * @param buf Output buffer where the hexadecimal representation will be stored.
+ * @param buf_len Size of the output buffer.
+ * @param data Input data buffer to encode.
+ * @param data_len Length of the input data.
+ * 
+ * @return The number of bytes written to buf or GDB_EOF if the buffer is too small.
  */
 static int gdb_enc_hex(char *buf, unsigned int buf_len, const char *data,
                        unsigned int data_len)
@@ -28,12 +30,15 @@ static int gdb_enc_hex(char *buf, unsigned int buf_len, const char *data,
     return data_len*2;
 }
 
-/*
- * Decode data from its hex-value representation to a buffer.
- *
- * Returns:
- *    0   if successful
- *    GDB_EOF if the buffer is too small
+/**
+ * @brief Decode data from its hexadecimal representation and store in a buffer.
+ * 
+ * @param buf Input buffer containing the hexadecimal data.
+ * @param buf_len Length of the input buffer.
+ * @param data Output buffer where the decoded data will be stored.
+ * @param data_len Expected length of the decoded data.
+ * 
+ * @return 0 if decoding was successful, or GDB_EOF if the buffer is too small or contains invalid data.
  */
 static int gdb_dec_hex(const char *buf, unsigned int buf_len, char *data,
                        unsigned int data_len)
@@ -50,7 +55,7 @@ static int gdb_dec_hex(const char *buf, unsigned int buf_len, char *data,
         /* Decode high nibble */
         tmp = gdb_get_val(*buf++, 16);
         if (tmp == GDB_EOF) {
-            /* Buffer contained junk. */
+            /* Buffer contained junk */
             GDB_ASSERT(0);
             return GDB_EOF;
         }
@@ -60,7 +65,7 @@ static int gdb_dec_hex(const char *buf, unsigned int buf_len, char *data,
         /* Decode low nibble */
         tmp = gdb_get_val(*buf++, 16);
         if (tmp == GDB_EOF) {
-            /* Buffer contained junk. */
+            /* Buffer contained junk */
             GDB_ASSERT(0);
             return GDB_EOF;
         }
@@ -70,12 +75,15 @@ static int gdb_dec_hex(const char *buf, unsigned int buf_len, char *data,
     return 0;
 }
 
-/*
- * Encode data to its binary representation in a buffer.
- *
- * Returns:
- *    0+  number of bytes written to buf
- *    GDB_EOF if the buffer is too small
+/**
+ * @brief Encode data into its binary representation and store in a buffer.
+ * 
+ * @param buf Output buffer where the binary representation will be stored.
+ * @param buf_len Size of the output buffer.
+ * @param data Input data buffer to encode.
+ * @param data_len Length of the input data.
+ * 
+ * @return The number of bytes written to buf or GDB_EOF if the buffer is too small.
  */
 static int gdb_enc_bin(char *buf, unsigned int buf_len, const char *data,
                        unsigned int data_len)
@@ -105,12 +113,15 @@ static int gdb_enc_bin(char *buf, unsigned int buf_len, const char *data,
     return buf_pos;
 }
 
-/*
- * Decode data from its bin-value representation to a buffer.
- *
- * Returns:
- *    0+  if successful, number of bytes decoded
- *    GDB_EOF if the buffer is too small
+/**
+ * @brief Decode data from its binary representation and store in a buffer.
+ * 
+ * @param buf Input buffer containing the binary data.
+ * @param buf_len Length of the input buffer.
+ * @param data Output buffer where the decoded data will be stored.
+ * @param data_len Expected length of the decoded data.
+ * 
+ * @return The number of bytes decoded or GDB_EOF if the buffer is too small or contains invalid data.
  */
 static int gdb_dec_bin(const char *buf, unsigned int buf_len, char *data,
                        unsigned int data_len)
@@ -124,10 +135,9 @@ static int gdb_dec_bin(const char *buf, unsigned int buf_len, char *data,
             return GDB_EOF;
         }
         if (buf[buf_pos] == '}') {
-            /* The next byte is escaped! */
+            /* The next byte is escaped */
             if (buf_pos+1 >= buf_len) {
-                /* There's an escape character, but no escaped character
-                 * following the escape character. */
+                /* No escaped character following the escape character */
                 GDB_ASSERT(0);
                 return GDB_EOF;
             }
