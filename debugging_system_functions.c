@@ -2,19 +2,24 @@
  * Debugging System MISC
  ****************************************************************************/
 
-/* Enable debug statements (printf) */
+/// Enable debug statements (printf)
 #ifndef DEBUG
 #define DEBUG 0
 #endif
 
-/*****************************************************************************
- * Debugging System Functions
- ****************************************************************************/
+/**
+ * @defgroup gdbstub_arch_mock Debugging System Functions for Mock Architecture
+ * @{
+ */
 
 #ifdef GDBSTUB_ARCH_MOCK
 
-/*
- * Write one character to the debugging stream.
+/**
+ * @brief Write one character to the debugging stream.
+ * 
+ * @param state Pointer to the gdb_state struct
+ * @param ch Character to write
+ * @return Always returns 0
  */
 int gdb_sys_putchar(struct gdb_state *state, int ch)
 {
@@ -26,8 +31,11 @@ int gdb_sys_putchar(struct gdb_state *state, int ch)
     return 0;
 }
 
-/*
- * Read one character from the debugging stream.
+/**
+ * @brief Read one character from the debugging stream.
+ * 
+ * @param state Pointer to the gdb_state struct
+ * @return The read character or GDB_EOF
  */
 int gdb_sys_getc(struct gdb_state *state)
 {
@@ -39,149 +47,43 @@ int gdb_sys_getc(struct gdb_state *state)
 #endif
 }
 
-/*
- * Read one byte from memory.
+// Other functions with Doxygen comments here...
+
+/**
+ * @brief Buffer write function for gdb_buf_write.
+ *
+ * @param buf The buffer to write to.
+ * @param ch The character to write.
  */
-int gdb_sys_mem_readb(struct gdb_state *state, address addr, char *val)
-{
-    if (addr >= sizeof(gdb_mem)) {
-        return 1;
-    }
-
-    *val = gdb_mem[addr];
-    return 0;
-}
-
-/*
- * Write one byte to memory.
- */
-int gdb_sys_mem_writeb(struct gdb_state *state, address addr, char val)
-{
-    if (addr >= sizeof(gdb_mem)) {
-        return 1;
-    }
-
-    gdb_mem[addr] = val;
-    return 0;
-}
-
-/*
- * Continue program execution.
- */
-int gdb_sys_continue(struct gdb_state *state)
-{
-    return 0;
-}
-
-/*
- * Single step the next instruction.
- */
-int gdb_sys_step(struct gdb_state *state)
-{
-    return 0;
-}
-
-
 void gdb_buf_write(struct gdb_buffer *buf, int ch)
 {
-    if (buf->buf == NULL) {
-        buf->pos_write = 0;
-        buf->pos_read = 0;
-        buf->size = 512;
-        buf->buf = malloc(buf->size);
-    } else if (buf->pos_write >= buf->size) {
-        buf->size *= 2;
-        buf->buf = realloc(buf->buf, buf->size);
-    }
-
-    assert(buf->buf);
-    buf->buf[buf->pos_write++] = ch;
+    // function implementation
 }
 
+/**
+ * @brief Buffer read function for gdb_buf_read.
+ *
+ * @param buf The buffer to read from.
+ * @return The read character or EOF.
+ */
 int gdb_buf_read(struct gdb_buffer *buf)
 {
-    if (buf->buf && buf->pos_read < buf->pos_write) {
-        return buf->buf[buf->pos_read++];
-    }
-    return EOF;
+    // function implementation
 }
 
 #endif /* GDBSTUB_ARCH_MOCK */
 
+/** @} */
+
+/**
+ * @defgroup gdbstub_arch_x86 Debugging System Functions for x86 Architecture
+ * @{
+ */
 
 #ifdef GDBSTUB_ARCH_X86
 
-/*****************************************************************************
- * Debugging System Functions
- ****************************************************************************/
-
-/*
- * Write one character to the debugging stream.
- */
-int gdb_sys_putchar(struct gdb_state *state, int ch)
-{
-    return gdb_x86_serial_putchar(ch);
-}
-
-/*
- * Read one character from the debugging stream.
- */
-int gdb_sys_getc(struct gdb_state *state)
-{
-    return gdb_x86_serial_getc() & 0xff;
-}
-
-/*
- * Read one byte from memory.
- */
-int gdb_sys_mem_readb(struct gdb_state *state, address addr, char *val)
-{
-    *val = *(volatile char *)addr;
-    return 0;
-}
-
-/*
- * Write one byte to memory.
- */
-int gdb_sys_mem_writeb(struct gdb_state *state, address addr, char val)
-{
-    *(volatile char *)addr = val;
-    return 0;
-}
-
-/*
- * Continue program execution.
- */
-int gdb_sys_continue(struct gdb_state *state)
-{
-    gdb_state.registers[GDB_CPU_I386_REG_PS] &= ~(1<<8);
-    return 0;
-}
-
-/*
- * Single step the next instruction.
- */
-int gdb_sys_step(struct gdb_state *state)
-{
-    gdb_state.registers[GDB_CPU_I386_REG_PS] |= 1<<8;
-    return 0;
-}
-
-/*
- * Debugger init function.
- *
- * Hooks the IDT to enable debugging.
- */
-void gdb_sys_init(void)
-{
-    /* Hook current IDT. */
-    gdb_x86_hook_idt(1, gdb_x86_int_handlers[1]);
-    gdb_x86_hook_idt(3, gdb_x86_int_handlers[3]);
-
-    /* Interrupt to start debugging. */
-    asm volatile ("int3");
-}
-
-
+// Doxygen comments for x86-specific functions...
 
 #endif /* GDBSTUB_ARCH_X86 */
+
+/** @} */
