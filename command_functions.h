@@ -2,12 +2,17 @@
  * Command Functions
  ****************************************************************************/
 
-/*
- * Read from memory and encode into buf.
- *
- * Returns
- *    0+  number of bytes written to buf
- *    GDB_EOF if the buffer is too small
+/**
+ * @brief Read from memory and encode into buf.
+ * 
+ * @param state Pointer to the GDB state object
+ * @param buf Buffer to write the encoded data to
+ * @param buf_len Length of the buffer
+ * @param addr Memory address to read from
+ * @param len Number of bytes to read
+ * @param enc Encoding function
+ * 
+ * @return Number of bytes written to buf, or GDB_EOF if the buffer is too small
  */
 static int gdb_mem_read(struct gdb_state *state, char *buf,
                         unsigned int buf_len, address addr, unsigned int len,
@@ -32,8 +37,17 @@ static int gdb_mem_read(struct gdb_state *state, char *buf,
     return enc(buf, buf_len, data, len);
 }
 
-/*
- * Write to memory from encoded buf.
+/**
+ * @brief Write to memory from encoded buf.
+ * 
+ * @param state Pointer to the GDB state object
+ * @param buf Encoded buffer to read data from
+ * @param buf_len Length of the buffer
+ * @param addr Memory address to write to
+ * @param len Number of bytes to write
+ * @param dec Decoding function
+ * 
+ * @return 0 on success, or GDB_EOF on failure
  */
 static int gdb_mem_write(struct gdb_state *state, const char *buf,
                          unsigned int buf_len, address addr, unsigned int len,
@@ -62,8 +76,12 @@ static int gdb_mem_write(struct gdb_state *state, const char *buf,
     return 0;
 }
 
-/*
- * Continue program execution at PC.
+/**
+ * @brief Continue program execution at PC.
+ * 
+ * @param state Pointer to the GDB state object
+ * 
+ * @return 0 on success
  */
 int gdb_continue(struct gdb_state *state)
 {
@@ -71,8 +89,12 @@ int gdb_continue(struct gdb_state *state)
     return 0;
 }
 
-/*
- * Step one instruction.
+/**
+ * @brief Step one instruction in the program.
+ * 
+ * @param state Pointer to the GDB state object
+ * 
+ * @return 0 on success
  */
 int gdb_step(struct gdb_state *state)
 {
