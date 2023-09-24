@@ -1,15 +1,15 @@
-
-
 /*****************************************************************************
  * Communication Functions
  ****************************************************************************/
 
-/*
- * Write a sequence of bytes.
+/**
+ * @brief Write a sequence of bytes to a specified output.
  *
- * Returns:
- *    0   if successful
- *    GDB_EOF if failed to write all bytes
+ * @param state Pointer to the GDB state object.
+ * @param buf Pointer to the buffer containing the bytes to be written.
+ * @param len The number of bytes to write.
+ *
+ * @return 0 if all bytes were successfully written, or GDB_EOF if an error occurred.
  */
 static int gdb_write(struct gdb_state *state, const char *buf, unsigned int len)
 {
@@ -22,12 +22,15 @@ static int gdb_write(struct gdb_state *state, const char *buf, unsigned int len)
     return 0;
 }
 
-/*
- * Read a sequence of bytes.
+/**
+ * @brief Read a sequence of bytes into a buffer.
  *
- * Returns:
- *    0   if successfully read len bytes
- *    GDB_EOF if failed to read all bytes
+ * @param state Pointer to the GDB state object.
+ * @param buf Pointer to the buffer where the bytes will be read into.
+ * @param buf_len Length of the buffer.
+ * @param len The number of bytes to read.
+ *
+ * @return 0 if exactly len bytes were successfully read, or GDB_EOF if an error occurred or the buffer is too small.
  */
 static int gdb_read(struct gdb_state *state, char *buf, unsigned int buf_len,
                     unsigned int len)
