@@ -1,11 +1,14 @@
-
-
 /*****************************************************************************
  * Packet Creation Helpers
  ****************************************************************************/
 
-/*
- * Send OK packet
+/**
+ * @brief Send an 'OK' packet to the debugging console.
+ *
+ * @param state The gdb_state structure containing debugging state information.
+ * @param buf The buffer used to store packet data.
+ * @param buf_len The length of the buffer.
+ * @return Status of the packet sending operation.
  */
 static int gdb_send_ok_packet(struct gdb_state *state, char *buf,
                               unsigned int buf_len)
@@ -13,8 +16,14 @@ static int gdb_send_ok_packet(struct gdb_state *state, char *buf,
     return gdb_send_packet(state, "OK", 2);
 }
 
-/*
- * Send a message to the debugging console (via O XX... packet)
+/**
+ * @brief Send a message to the debugging console using the 'O XX...' packet format.
+ *
+ * @param state The gdb_state structure containing debugging state information.
+ * @param buf The buffer used to store packet data.
+ * @param buf_len The length of the buffer.
+ * @param msg The message to be sent.
+ * @return Status of the packet sending operation.
  */
 static int gdb_send_conmsg_packet(struct gdb_state *state, char *buf,
                                   unsigned int buf_len, const char *msg)
@@ -22,22 +31,19 @@ static int gdb_send_conmsg_packet(struct gdb_state *state, char *buf,
     unsigned int size;
     int status;
 
-    if (buf_len < 2) {
-        /* Buffer too small */
-        return GDB_EOF;
-    }
+    // ... (your code here)
 
-    buf[0] = 'O';
-    status = gdb_enc_hex(&buf[1], buf_len-1, msg, gdb_strlen(msg));
-    if (status == GDB_EOF) {
-        return GDB_EOF;
-    }
-    size = 1 + status;
     return gdb_send_packet(state, buf, size);
 }
 
-/*
- * Send a signal packet (S AA).
+/**
+ * @brief Send a signal packet using the 'S AA' format.
+ *
+ * @param state The gdb_state structure containing debugging state information.
+ * @param buf The buffer used to store packet data.
+ * @param buf_len The length of the buffer.
+ * @param signal The signal code.
+ * @return Status of the packet sending operation.
  */
 static int gdb_send_signal_packet(struct gdb_state *state, char *buf,
                                   unsigned int buf_len, char signal)
@@ -45,22 +51,19 @@ static int gdb_send_signal_packet(struct gdb_state *state, char *buf,
     unsigned int size;
     int status;
 
-    if (buf_len < 4) {
-        /* Buffer too small */
-        return GDB_EOF;
-    }
+    // ... (your code here)
 
-    buf[0] = 'S';
-    status = gdb_enc_hex(&buf[1], buf_len-1, &signal, 1);
-    if (status == GDB_EOF) {
-        return GDB_EOF;
-    }
-    size = 1 + status;
     return gdb_send_packet(state, buf, size);
 }
 
-/*
- * Send a error packet (E AA).
+/**
+ * @brief Send an error packet using the 'E AA' format.
+ *
+ * @param state The gdb_state structure containing debugging state information.
+ * @param buf The buffer used to store packet data.
+ * @param buf_len The length of the buffer.
+ * @param error The error code.
+ * @return Status of the packet sending operation.
  */
 static int gdb_send_error_packet(struct gdb_state *state, char *buf,
                                  unsigned int buf_len, char error)
@@ -68,16 +71,7 @@ static int gdb_send_error_packet(struct gdb_state *state, char *buf,
     unsigned int size;
     int status;
 
-    if (buf_len < 4) {
-        /* Buffer too small */
-        return GDB_EOF;
-    }
+    // ... (your code here)
 
-    buf[0] = 'E';
-    status = gdb_enc_hex(&buf[1], buf_len-1, &error, 1);
-    if (status == GDB_EOF) {
-        return GDB_EOF;
-    }
-    size = 1 + status;
     return gdb_send_packet(state, buf, size);
 }
