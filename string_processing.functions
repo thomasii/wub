@@ -9,8 +9,11 @@ static const char digits[] = "0123456789abcdef";
  * String Processing Helper Functions
  ****************************************************************************/
 
-/*
- * Get null-terminated string length.
+/**
+ * @brief Calculate the length of a null-terminated string.
+ *
+ * @param ch Pointer to the string.
+ * @return Length of the string.
  */
 static int gdb_strlen(const char *ch)
 {
@@ -24,17 +27,14 @@ static int gdb_strlen(const char *ch)
     return len;
 }
 
-/*
- * Get integer value for a string representation.
+/**
+ * @brief Convert a string to an integer.
  *
- * If the string starts with + or -, it will be signed accordingly.
- *
- * If base == 0, the base will be determined:
- *   base 16 if the string starts with 0x or 0X,
- *   base 10 otherwise
- *
- * If endptr is specified, it will point to the last non-digit in the
- * string. If there are no digits in the string, it will be set to NULL.
+ * @param str Pointer to the string representation of the integer.
+ * @param len Length of the string.
+ * @param base Base for integer conversion.
+ * @param endptr If specified, will point to the last non-digit character in the string.
+ * @return The integer value of the string.
  */
 static int gdb_strtol(const char *str, unsigned int len, int base,
                       const char **endptr)
@@ -98,8 +98,11 @@ static int gdb_strtol(const char *str, unsigned int len, int base,
     return value;
 }
 
-/*
- * Get the corresponding ASCII hex digit character for a value.
+/**
+ * @brief Get the corresponding ASCII hex digit for a value.
+ *
+ * @param val Integer value (0-15).
+ * @return The corresponding ASCII hex digit or GDB_EOF if the value is not valid.
  */
 static char gdb_get_digit(int val)
 {
@@ -110,10 +113,12 @@ static char gdb_get_digit(int val)
     }
 }
 
-/*
- * Get the corresponding value for a ASCII digit character.
+/**
+ * @brief Get the integer value for a given ASCII character.
  *
- * Supports bases 2-16.
+ * @param digit ASCII character (digit).
+ * @param base Base of the number system (2-16).
+ * @return The corresponding integer value or GDB_EOF if the character is not a valid digit in the given base.
  */
 static int gdb_get_val(char digit, int base)
 {
@@ -133,8 +138,11 @@ static int gdb_get_val(char digit, int base)
 }
 
 #if DEBUG
-/*
- * Determine if this is a printable ASCII character.
+/**
+ * @brief Check if a character is printable ASCII.
+ *
+ * @param ch Character to check.
+ * @return 1 if the character is printable ASCII, 0 otherwise.
  */
 static int gdb_is_printable_char(char ch)
 {
