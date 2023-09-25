@@ -4,13 +4,11 @@
  * Packet Functions
  ****************************************************************************/
 
-/*
- * Receive a packet acknowledgment
+/**
+ * @brief Receive a packet acknowledgment.
  *
- * Returns:
- *    0   if an ACK (+) was received
- *    1   if a NACK (-) was received
- *    GDB_EOF otherwise
+ * @param state Pointer to the gdb_state structure containing debugging state information.
+ * @return 0 if an ACK (+) was received, 1 if a NACK (-) was received, GDB_EOF otherwise.
  */
 static int gdb_recv_ack(struct gdb_state *state)
 {
@@ -31,11 +29,12 @@ static int gdb_recv_ack(struct gdb_state *state)
     }
 }
 
-/*
- * Calculate 8-bit checksum of a buffer.
+/**
+ * @brief Calculate 8-bit checksum of a buffer.
  *
- * Returns:
- *    8-bit checksum.
+ * @param buf Pointer to the buffer.
+ * @param len Length of the buffer.
+ * @return 8-bit checksum of the buffer.
  */
 static int gdb_checksum(const char *buf, unsigned int len)
 {
@@ -50,14 +49,15 @@ static int gdb_checksum(const char *buf, unsigned int len)
     return csum;
 }
 
-/*
- * Transmits a packet of data.
- * Packets are of the form: $<packet-data>#<checksum>
+/**
+ * @brief Transmit a packet of data.
  *
- * Returns:
- *    0   if the packet was transmitted and acknowledged
- *    1   if the packet was transmitted but not acknowledged
- *    GDB_EOF otherwise
+ * Packet structure: $<packet-data>#<checksum>
+ *
+ * @param state Pointer to the gdb_state structure containing debugging state information.
+ * @param pkt_data Pointer to the packet data.
+ * @param pkt_len Length of the packet data.
+ * @return 0 if the packet was transmitted and acknowledged, 1 if not acknowledged, GDB_EOF otherwise.
  */
 static int gdb_send_packet(struct gdb_state *state, const char *pkt_data,
                            unsigned int pkt_len)
@@ -101,12 +101,14 @@ static int gdb_send_packet(struct gdb_state *state, const char *pkt_data,
     return gdb_recv_ack(state);
 }
 
-/*
- * Receives a packet of data, assuming a 7-bit clean connection.
+/**
+ * @brief Receive a packet of data, assuming a 7-bit clean connection.
  *
- * Returns:
- *    0   if the packet was received
- *    GDB_EOF otherwise
+ * @param state Pointer to the gdb_state structure containing debugging state information.
+ * @param pkt_buf Buffer to store the received packet data.
+ * @param pkt_buf_len Length of the buffer.
+ * @param pkt_len Length of the received packet.
+ * @return 0 if the packet was received successfully, GDB_EOF otherwise.
  */
 static int gdb_recv_packet(struct gdb_state *state, char *pkt_buf,
                            unsigned int pkt_buf_len, unsigned int *pkt_len)
